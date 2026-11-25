@@ -47,7 +47,7 @@ func fail(w http.ResponseWriter, status int, message string) {
 func (a *API) health(w http.ResponseWriter, r *http.Request) {
 	respond(w, 200, map[string]string{
 		"application": "Forge",
-		"version":     "0.1.0",
+		"version":     "0.2.0",
 		"status":      "healthy",
 	})
 }
