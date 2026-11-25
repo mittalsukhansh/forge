@@ -11,3 +11,6 @@ coverage.html
 bin/
 dist/
 *.zip
+
+reports/
+.venv/
