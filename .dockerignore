@@ -1,0 +1,13 @@
+.git
+forge
+*.db
+*.db-shm
+*.db-wal
+*.log
+.env
+.env.*
+coverage.out
+coverage.html
+bin/
+dist/
+*.zip

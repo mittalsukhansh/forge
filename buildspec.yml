@@ -1,0 +1,48 @@
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    AWS_REGION: us-east-1
+    AWS_ACCOUNT_ID: "154254764661"
+    IMAGE_REPO_NAME: forge
+
+phases:
+  install:
+    commands:
+      - set -eo pipefail
+      - go version
+      - docker version
+      - go mod download
+
+  pre_build:
+    commands:
+      - bash scripts/quality.sh
+      - export REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+      - export IMAGE_URI="$REGISTRY/$IMAGE_REPO_NAME"
+      - export COMMIT_SHA="${CODEBUILD_RESOLVED_SOURCE_VERSION:-$(git rev-parse HEAD)}"
+      - export IMAGE_TAG="${COMMIT_SHA:0:12}"
+      - echo "Authenticating with Amazon ECR"
+      - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$REGISTRY"
+
+  build:
+    commands:
+      - echo "Building Forge runtime image"
+      - docker build -t "$IMAGE_URI:$IMAGE_TAG" .
+      - bash scripts/security.sh "$IMAGE_URI:$IMAGE_TAG"
+      - bash scripts/smoke.sh "$IMAGE_URI:$IMAGE_TAG"
+      - docker tag "$IMAGE_URI:$IMAGE_TAG" "$IMAGE_URI:latest"
+      - touch /tmp/forge-build-success
+
+  post_build:
+    commands:
+      - test "${CODEBUILD_BUILD_SUCCEEDING:-1}" = "1"
+      - test -f /tmp/forge-build-success
+      - docker push "$IMAGE_URI:$IMAGE_TAG"
+      - docker push "$IMAGE_URI:latest"
+      - rm -f /tmp/forge-build-success
+      - echo "FORGE_RELEASE_SUCCESS"
+
+artifacts:
+  files:
+    - reports/**/*

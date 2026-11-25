@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Forge — Pipeline Engine</title>
+    <link rel="stylesheet" href="/ui/style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div class="logo">F</div>
+        <div>
+            <strong>FORGE</strong>
+            <small>Container-native CI/CD</small>
+        </div>
+    </div>
+
+    <div class="connection" id="connection">
+        <span class="dot"></span>
+        Connecting
+    </div>
+</header>
+
+<main>
+    <section class="heading">
+        <div>
+            <div class="eyebrow">WORKSPACE / DEFAULT</div>
+            <h1>Pipeline Overview</h1>
+            <p>Build, execute and monitor your pipelines.</p>
+        </div>
+
+        <span class="version">ENGINE v0.1.0</span>
+    </section>
+
+    <section class="metrics">
+        <div class="metric">
+            <span>TOTAL BUILDS</span>
+            <strong id="total">0</strong>
+        </div>
+
+        <div class="metric">
+            <span>SUCCESSFUL</span>
+            <strong class="green" id="success">0</strong>
+        </div>
+
+        <div class="metric">
+            <span>FAILED</span>
+            <strong class="red" id="failed">0</strong>
+        </div>
+
+        <div class="metric">
+            <span>RUNNING</span>
+            <strong class="blue" id="running">0</strong>
+        </div>
+
+        <div class="metric">
+            <span>QUEUED</span>
+            <strong class="amber" id="queued">0</strong>
+        </div>
+    </section>
+
+    <section class="workspace">
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Pipeline Editor</h2>
+                <span class="tag">YAML</span>
+            </div>
+
+            <div class="editor-tools">
+                <button onclick="loadExample('success')">Success demo</button>
+                <button onclick="loadExample('failure')">Failure demo</button>
+                <button onclick="loadExample('concurrent')">Worker demo</button>
+            </div>
+
+            <textarea id="pipeline" spellcheck="false"></textarea>
+
+            <div class="panel-footer">
+                <span id="message">Ready to execute</span>
+
+                <button class="primary" id="run-button"
+                        onclick="submitPipeline()">
+                    ▶ Run Pipeline
+                </button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Execution Console</h2>
+                <span class="tag" id="selected-job">NO JOB</span>
+            </div>
+
+            <div class="terminal-header">
+                <span class="red-dot"></span>
+                <span class="yellow-dot"></span>
+                <span class="green-dot"></span>
+                <span>forge / execution.log</span>
+            </div>
+
+            <pre id="logs">Select a build to inspect its execution logs.</pre>
+
+            <div class="panel-footer">
+                <span id="job-status">Idle</span>
+                <button onclick="copyLogs()">Copy logs</button>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="panel history">
+        <div class="panel-header">
+            <h2>Build History</h2>
+            <span class="tag">AUTO REFRESH · 2s</span>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>BUILD</th>
+                        <th>PIPELINE</th>
+                        <th>STATUS</th>
+                        <th>CREATED</th>
+                        <th>DURATION</th>
+                    </tr>
+                </thead>
+                <tbody id="jobs"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <footer>
+        FORGE / GO + DOCKER + SQLITE
+        <span>LOCAL EXECUTION ENGINE</span>
+    </footer>
+</main>
+
+<script src="/ui/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+name: Concurrent Worker Test
+
+steps:
+  - name: Long Running Task
+    image: alpine:3
+    commands:
+      - echo "Starting background job"
+      - sleep 10
+      - echo "Background job completed"

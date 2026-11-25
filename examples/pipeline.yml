@@ -1,0 +1,23 @@
+name: Forge System Validation
+
+steps:
+  - name: Environment Information
+    image: alpine:3
+    commands:
+      - echo "Welcome to Forge"
+      - uname -a
+      - cat /etc/os-release
+
+  - name: Arithmetic Test
+    image: alpine:3
+    commands:
+      - test "$((2 + 2))" -eq 4
+      - echo "Arithmetic test passed"
+
+  - name: Filesystem Test
+    image: alpine:3
+    commands:
+      - mkdir -p /tmp/build
+      - echo "Forge build artifact" > /tmp/build/output.txt
+      - test -s /tmp/build/output.txt
+      - cat /tmp/build/output.txt
